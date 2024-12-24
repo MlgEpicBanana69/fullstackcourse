@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    activate browser
+    Note right of browser: Client fills in the text input "note"
+    Note right of browser: Client clicks on submit
+    Note right of browser: The client locally updates its note list to include the newly created note
+    deactivate browser
+    Note right of browser: This post contains the new note to be added {content, date} and is sent to the server
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+    activate server
+    Note left of server: The server processes the input based on the spa.js script logic
+    Note left of server: The server edits in memory its /notes html to include the newly submitted notes
+    server-->>browser: 201 CREATED (DOES NOT REDIRECT)
+    deactivate server
