@@ -1,6 +1,6 @@
 import Note from './components/Note'
 
-const App = ({ note }) => {
+const App = ({ notes }) => {
 
   return (
     <div>
