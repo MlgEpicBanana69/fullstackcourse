@@ -1,6 +1,28 @@
+import {useState} from 'react';
+
 import Note from './components/Note'
 
-const App = ({ notes }) => {
+const App = (props) => {
+  const [notes, setNotes] = useState(props.notes)
+  const [newNote, setNewNote] = useState('a new note...')
+
+  const addNote = (event) => {
+    event.preventDefault()
+    console.log('button clicked', event.target);
+    setNotes(notes.concat(
+      {
+        id: notes.length,
+        content: newNote,
+        important: false
+      }
+    ))
+    setNewNote('')
+  }
+
+  const handleNoteChanged = (event) => {
+    console.log('event.target.value :>> ', event.target.value);
+    setNewNote(event.target.value)
+  }
 
   return (
     <div>
@@ -12,6 +34,10 @@ const App = ({ notes }) => {
           })
         }
       </ul>
+      <form onSubmit={addNote}>
+        <input value={newNote} onChange={handleNoteChanged} />
+        <button type="submit">save</button>
+      </form>
     </div>
   )
 }
