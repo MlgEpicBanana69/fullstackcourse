@@ -2,22 +2,37 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    {
+      name: 'Arto Hellas',
+      number: '040-1234567'
+    }
   ])
+
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const onNewNameChanged = (event) => {
     setNewName(event.target.value)
   }
 
+  const onNewNumberChanged = (event) => {
+    setNewName()
+  }
+
   const onPhonebookSubmit = (event) => {
     event.preventDefault()
     console.log('newName is now :>> ', newName);
-    console.log('persons.concat({name: newName}) :>> ', persons.concat({name: newName}));
+
+    // Already exists
+    if (persons.find(person => person.name === newName)) {
+      alert(`${newName} is already added to phonebook!`)
+      return
+    }
+
+    // Add new person to phonebook
     setPersons(persons.concat({
       name: newName
     }))
-
     setNewName('')
   }
 
@@ -28,6 +43,10 @@ const App = () => {
       <form onSubmit={onPhonebookSubmit}>
         <div>
           name: <input onChange={onNewNameChanged} value={newName}/>
+        </div>
+        <br/>
+        <div>
+          number: <input type="tel" onChange={onNewNumberChanged} value={newNumber} pattern='[0-9]{3}-[0-9]{5}'/>
         </div>
         <div>
           <button type="submit">add</button>
