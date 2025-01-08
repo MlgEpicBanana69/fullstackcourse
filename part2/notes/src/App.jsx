@@ -1,15 +1,35 @@
 import { useState, useEffect } from 'react';
 
+import './index.css';
+
 import noteService from './services/notes.js';
 
 import Note from './components/Note'
+import Notification from './components/notification.jsx';
+
+const Footer = () => {
+  const footerStyle = {
+    color: 'green',
+    fontStyle: 'italic',
+    fontSize: 16
+  }
+  return (
+    <div style={footerStyle}>
+      <br />
+      <em>Note app, Department of Computer Science, University of Helsinki 2024</em>
+    </div>
+  )
+}
 
 const App = () => {
+  // notes
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
-
   const [newNoteImportant, setNewNoteImportant] = useState(false)
+
+  // notification
+  const [notificationBanner, setNotificationBanner] = useState(null)
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
@@ -34,6 +54,7 @@ const App = () => {
         console.log('returnedNote :>> ', returnedNote);
         setNotes(notes.concat(returnedNote));
         setNewNote('');
+        setNotificationBanner({type: "success", message: `${returnedNote.content} was added succesfully`})
       })
   }
 
@@ -60,9 +81,10 @@ const App = () => {
         setNotes(notes.map(n => n.id === id ? returnedNote : n))
       })
       .catch(error => {
-        alert(
-          `the note '${note.content}' was already deleted from server (error: ${error})`
-        )
+        setNotificationBanner({
+          message: `the note '${note.content}' was already deleted from server (errorcode ${error.code}})`,
+          type: "error"
+        })
         setNotes(notes.filter(n => n.id !== id))
       })
   }
@@ -70,6 +92,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification notification={notificationBanner} />
       <ul>
         {
           notesToShow.map(note =>
@@ -89,6 +112,7 @@ const App = () => {
           Important: <input type='checkbox' name='noteImportant' onChange={handleNoteImportantChanged} />
         </label>
       </form>
+      <Footer />
     </div>
   )
 }

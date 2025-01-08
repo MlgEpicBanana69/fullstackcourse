@@ -1,6 +1,6 @@
 import phonebookService from '../services/phonebook.js';
 
-const PersonList = ({persons, setPersons, filter}) => {
+const PersonList = ({persons, handleRemove, filter}) => {
   const handleRemoveButtonOnClick = (person) => {
 
     return (
@@ -13,7 +13,22 @@ const PersonList = ({persons, setPersons, filter}) => {
         phonebookService
           .remove(person.id)
           .then(returnedPerson => {
-            setPersons(persons.filter(p => p.id !== returnedPerson.id ))
+            handleRemove(
+              persons.filter(p => p.id !== returnedPerson.id),
+              {
+                message: `${returnedPerson.name} was succesfully removed from phonebook`,
+                type: "success"
+              }
+            )
+          })
+          .catch(error => {
+            handleRemove(
+              persons.filter(p => p.id !== person.id),
+              {
+                message: `Could not remove ${person.name} from phonebook as it was already deleted (${error})`,
+                type: "error"
+              }
+            )
           })
       }
     )

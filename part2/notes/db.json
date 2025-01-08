@@ -48,7 +48,7 @@
     {
       "id": "508c",
       "content": "sussy baka",
-      "important": true
+      "important": false
     },
     {
       "id": "250d",
@@ -59,6 +59,16 @@
       "id": "5eb8",
       "content": "asdasda",
       "important": true
+    },
+    {
+      "id": "6e30",
+      "content": "a new note...",
+      "important": true
+    },
+    {
+      "id": "88b6",
+      "content": "gigachad",
+      "important": false
     }
   ]
 }

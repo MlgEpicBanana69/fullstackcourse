@@ -2,7 +2,7 @@ import {useState} from 'react';
 
 import phonebookService from '../services/phonebook.js';
 
-const PersonForm = ({persons, setPersons}) => {
+const PersonForm = ({persons, onSubmit}) => {
   // New person
   const [newName, setNewName] = useState('')
   const onNewNameChanged = (event) => {
@@ -34,7 +34,13 @@ const PersonForm = ({persons, setPersons}) => {
           phonebookService
           .update(duplicatePerson.id, {...duplicatePerson, number: newNumber})
           .then(returnedPerson => {
-            setPersons(persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson))
+            onSubmit(
+              persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson),
+              {
+                message: `${returnedPerson.name}'s number was updated to ${returnedPerson.number}`,
+                type: "success"
+              }
+            )
             setNewName('')
             setNewNumber('')
           })
@@ -51,7 +57,13 @@ const PersonForm = ({persons, setPersons}) => {
       phonebookService
       .add(newPerson)
       .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
+        onSubmit(
+          persons.concat(returnedPerson),
+          {
+            message: `Succesfully added ${returnedPerson.name} to phonebook`,
+            type: "success"
+          }
+        )
         setNewName('')
         setNewNumber('')
       })
