@@ -18,25 +18,44 @@ const PersonForm = ({persons, setPersons}) => {
     event.preventDefault()
     console.log('newName is now :>> ', newName);
 
-    // Already exists
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook!`)
-      return
-    }
-
+    // The new person to potentially add
     let newPerson = {
       name: newName,
       number: newNumber
     }
 
-    // Add new person to phonebook
-    phonebookService
+    let duplicatePerson = persons.find(person => person.name === newPerson.name)
+    console.log('duplicatePerson :>> ', duplicatePerson);
+    // Already exists
+    if (duplicatePerson) {
+      // Exists with a different number
+      if (duplicatePerson.number !== newPerson.number) {
+        if (window.confirm(`${newPerson.name} already exists with a different number. Do you want to update the number to the new one?`)) {
+          phonebookService
+          .update(duplicatePerson.id, {...duplicatePerson, number: newNumber})
+          .then(returnedPerson => {
+            setPersons(persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+        }
+      }
+      // Is already the exact same
+      else {
+        alert(`${newName} is already added to phonebook!`)
+      }
+    }
+    // Not already exists
+    else {
+      // Add new person to phonebook
+      phonebookService
       .add(newPerson)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       })
+    }
   }
 
   return (
