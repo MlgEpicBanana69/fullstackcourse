@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios';
+
+import phonebookService from './services/phonebook.js';
 
 import Filter from './components/filter.jsx';
 import PersonForm from './components/personForm.jsx';
@@ -9,15 +10,15 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [filter, setFilter] = useState('')
 
-  const hook = () => {
-    axios.get("http://localhost:3001/persons")
-    .then(response => {
-      console.log('response.data :>> ', response.data);
-      setPersons(response.data)
-    })
-  }
-
-  useEffect(hook, [])
+  // Initialize persons from server
+  useEffect(() => {
+    phonebookService
+      .getAll()
+      .then(allPersons => {
+        console.log('allPersons :>> ', allPersons);
+        setPersons(allPersons)
+      })
+  }, [])
 
   return (
     <div>

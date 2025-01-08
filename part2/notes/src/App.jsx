@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+
+import noteService from './services/notes.js';
 
 import Note from './components/Note'
 
@@ -12,32 +13,26 @@ const App = () => {
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
-  const hook = () => {
-    console.log("effect");
-    axios
-      .get("http://localhost:3001/notes")
-      .then(response => {
-        console.log("promise fulfilled");
-        setNotes(response.data)
+  useEffect(() => {
+    noteService
+      .getAll()
+      .then(notes => {
+        setNotes(notes)
       })
-  }
-
-  useEffect(hook, [])
+  }, [])
 
   const addNote = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target);
-
     let noteObj = {
       content: newNote,
       important: newNoteImportant,
     }
-
-    axios
-      .post("http://localhost:3001/notes", noteObj)
-      .then(response => {
-        console.log('response.data :>> ', response.data);
-        setNotes(notes.concat(response.data));
+    noteService
+      .create(noteObj)
+      .then(returnedNote => {
+        console.log('returnedNote :>> ', returnedNote);
+        setNotes(notes.concat(returnedNote));
         setNewNote('');
       })
   }
@@ -56,16 +51,20 @@ const App = () => {
   }
 
   const toggleImportanceOf = id => {
-    console.log(`importance of ${id} needs to be toggled`);
-    const url = `http://localhost:3001/notes/${id}`
-    console.log('id :>> ', id);
     const note = notes.find(n => n.id === id)
-    console.log('note :>> ', note);
-    const changedNote = {...note, important: !note.important}
+    const changedNote = { ...note, important: !note.important }
 
-    axios.put(url, changedNote).then(response => {
-      setNotes(notes.map(n => n.id === id ? response.data : n))
-    })
+    noteService
+      .update(id, changedNote)
+      .then(returnedNote => {
+        setNotes(notes.map(n => n.id === id ? returnedNote : n))
+      })
+      .catch(error => {
+        alert(
+          `the note '${note.content}' was already deleted from server (error: ${error})`
+        )
+        setNotes(notes.filter(n => n.id !== id))
+      })
   }
 
   return (
@@ -81,11 +80,11 @@ const App = () => {
       <form onSubmit={addNote}>
         <input name='noteInput' value={newNote} onChange={handleNoteChanged} />
         <button type="submit">save</button>
-        <br/>
+        <br />
         <label>
           Show all: <input type='checkbox' name='showAll' checked={showAll} onChange={handleShowAllChanged} />
         </label>
-        <br/>
+        <br />
         <label>
           Important: <input type='checkbox' name='noteImportant' onChange={handleNoteImportantChanged} />
         </label>

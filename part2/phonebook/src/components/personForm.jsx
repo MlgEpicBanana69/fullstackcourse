@@ -1,5 +1,7 @@
 import {useState} from 'react';
 
+import phonebookService from '../services/phonebook.js';
+
 const PersonForm = ({persons, setPersons}) => {
   // New person
   const [newName, setNewName] = useState('')
@@ -22,12 +24,19 @@ const PersonForm = ({persons, setPersons}) => {
       return
     }
 
-    // Add new person to phonebook
-    setPersons(persons.concat({
+    let newPerson = {
       name: newName,
       number: newNumber
-    }))
-    setNewName('')
+    }
+
+    // Add new person to phonebook
+    phonebookService
+      .add(newPerson)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   return (
