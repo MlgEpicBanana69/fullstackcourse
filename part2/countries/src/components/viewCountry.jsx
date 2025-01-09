@@ -1,24 +1,23 @@
 import { useEffect, useState } from "react";
 import weatherService from "../services/weather";
 
-const WeatherForecast = ({forecast}) => {
+const WeatherReport = ({forecast}) => {
     console.log('forecast :>> ', forecast);
 
     if (forecast === null) {
         return <div>{null}</div>
     }
 
-    let relevantForecast = {
-        "temp": `${forecast.current.temperature_2m}${forecast.current_units.temperature_2m}`,
-        "weatherCode": forecast.current.weather_code
-    }
-    let interp = weatherService.weatherInterpertation[relevantForecast.weatherCode]["day"]
-    console.log('relevantForecast :>> ', relevantForecast);
+    const temperature = `${forecast.current.temperature_2m}${forecast.current_units.temperature_2m}`
+    const winds = `${forecast.current.wind_speed_10m}${forecast.current_units.wind_speed_10m}`
+    const is_day = forecast.current.is_day ? "day" : "night"
+    let interp = weatherService.weatherInterpertation[forecast.current.weather_code][is_day]
+
     return (
         <>
-            {relevantForecast.temp}
-            <br/>
+            <h3>temperature {temperature}</h3>
             <img src={interp.image} alt={interp.description}/>
+            <h3>wind {winds}</h3>
         </>
     )
 }
@@ -37,7 +36,7 @@ const ViewCountry = ({country}) => {
     return (
         <div>
             <h1>{country.name.common}</h1>
-            <h3>{country.capital} <WeatherForecast forecast={forecast} /></h3>
+            <h3>{country.capital}</h3>
             <h3>{country.area}</h3>
             <h2>languages</h2>
             <ul>
@@ -48,6 +47,8 @@ const ViewCountry = ({country}) => {
                 }
             </ul>
             <img src={country.flags.png} alt={country.flags.alt}></img>
+            <h2>Weather in {country.capital}</h2>
+            <WeatherReport forecast={forecast} />
         </div>
 
     )

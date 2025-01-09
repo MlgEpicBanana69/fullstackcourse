@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = "https://historical-forecast-api.open-meteo.com/v1"
+const baseURL = "https://api.open-meteo.com/v1"
 
 const weatherInterpertation = {
     "0": {
@@ -286,8 +286,11 @@ const weatherInterpertation = {
 }
 
 const getTodayAt = (latitude, longitude) => {
-    // forecast?latitude=52.52&longitude=13.41&current=temperature_2m,weather_code&timezone=auto&forecast_days=1
-    const requestURL = `${baseURL}/forecast?latitude=${latitude}&longitude=${longitude}&current=weather_code,temperature_2m&timezone=auto&forecast_days=1`
+    const latlng = `latitude=${latitude}&longitude=${longitude}`
+    const current = `current=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m`
+    const span = `timezone=auto&forecast_days=1`
+
+    const requestURL = `${baseURL}/forecast?${latlng}&${current}&${span}`
 
     return (
         axios
