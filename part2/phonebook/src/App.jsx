@@ -24,6 +24,7 @@ const App = () => {
 
   const personListHandleRemove = (newPersons, notification=null) => {
     if (newPersons) {
+      console.log('newPersons :>> ', newPersons);
       setPersons(newPersons)
     }
     setNotification(notification)
