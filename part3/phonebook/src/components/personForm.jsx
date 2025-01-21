@@ -13,6 +13,31 @@ const PersonForm = ({persons, onSubmit}) => {
     setNewNumber(event.target.value)
   }
 
+  const handleOnError = (error) => {
+    console.log('error :>> ', error);
+
+    switch (error.name) {
+      case 'ValidationError':
+        onSubmit(
+          persons,
+          {
+            message: error.message,
+            type: 'error'
+          }
+        );
+        break;
+      default:
+        onSubmit(
+          persons,
+          {
+            message: `An error has occurred! ${error.message}`,
+            type: 'error'
+          }
+        );
+        break;
+    }
+  }
+
   // Submit event
   const onPhonebookSubmit = (event) => {
     event.preventDefault()
@@ -44,6 +69,7 @@ const PersonForm = ({persons, onSubmit}) => {
             setNewName('')
             setNewNumber('')
           })
+          .catch(error => handleOnError(error.response.data))
         }
       }
       // Is already the exact same
@@ -67,6 +93,7 @@ const PersonForm = ({persons, onSubmit}) => {
         setNewName('')
         setNewNumber('')
       })
+      .catch(error => handleOnError(error.response.data))
     }
   }
 
@@ -76,7 +103,7 @@ const PersonForm = ({persons, onSubmit}) => {
           name: <input onChange={onNewNameChanged} value={newName} required/>
         </div>
         <div>
-          number: <input type="tel" onChange={onNewNumberChanged} value={newNumber} pattern='[0-9]{3}-[0-9]{7}' required/>
+          number: <input type="tel" onChange={onNewNumberChanged} value={newNumber} pattern='[0-9]{2,3}-[0-9]{7}' required/>
         </div>
         <div>
           <button type="submit">add</button>
