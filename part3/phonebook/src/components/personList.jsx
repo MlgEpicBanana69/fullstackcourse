@@ -12,11 +12,11 @@ const PersonList = ({persons, handleRemove, filter}) => {
         // Remove person
         phonebookService
           .remove(person.id)
-          .then(returnedPerson => {
+          .then(() => {
             handleRemove(
-              persons.filter(p => p.id !== returnedPerson.id),
+              persons.filter(p => p.id !== person.id),
               {
-                message: `${returnedPerson.name} was succesfully removed from phonebook`,
+                message: `${person.name} was succesfully removed from phonebook`,
                 type: "success"
               }
             )
