@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 
-import phonebookService from './services/phonebook.js';
+import phonebookService from './services/phonebook.js'
 
-import Filter from './components/filter.jsx';
-import PersonForm from './components/personForm.jsx';
-import PersonList from './components/personList.jsx';
-import Notification from './components/notification.jsx';
+import Filter from './components/filter.jsx'
+import PersonForm from './components/personForm.jsx'
+import PersonList from './components/personList.jsx'
+import Notification from './components/notification.jsx'
 
-import "./index.css"
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -16,10 +16,10 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
   const personFormOnSubmit = (newPersons, notification=null) => {
-      console.log('newPersons :>> ', newPersons);
-      console.log('notification :>> ', notification);
-      setPersons(newPersons)
-      setNotification(notification)
+    console.log('newPersons :>> ', newPersons)
+    console.log('notification :>> ', notification)
+    setPersons(newPersons)
+    setNotification(notification)
   }
 
   const personListHandleRemove = (newPersons, notification=null) => {
@@ -34,7 +34,7 @@ const App = () => {
     phonebookService
       .getAll()
       .then(allPersons => {
-        console.log('allPersons :>> ', allPersons);
+        console.log('allPersons :>> ', allPersons)
         setPersons(allPersons)
       })
   }, [])
